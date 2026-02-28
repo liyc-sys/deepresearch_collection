@@ -1,0 +1,30 @@
+# Virtual environments
+.venv_tier1/
+.venv_yunque/
+.venv*/
+
+# Environment files (contain API keys)
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Output files
+output/
+workspace/
+workspaces/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

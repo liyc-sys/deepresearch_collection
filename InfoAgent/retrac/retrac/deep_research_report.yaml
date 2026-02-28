@@ -1,0 +1,138 @@
+max_turns: 1000
+max_steps: 10000
+max_cycles: 2
+system_prompt: |
+  You are a deep research agent. Your task is to conduct thorough, multi-source research on a given topic and produce a comprehensive, well-structured research report.
+
+  You have access to the **search** tool (for web search) and the **visit** tool (for reading web pages). Use them extensively to gather information from diverse, authoritative sources.
+
+  Research guidelines:
+  - Search broadly: use varied queries, synonyms, and different angles to cover the topic comprehensively.
+  - Visit primary sources whenever possible; do not rely on a single search result.
+  - Cross-verify key claims across multiple independent sources.
+  - Pay attention to dates, authorship, and source credibility.
+  - Collect specific data points: statistics, quotes, names, dates, methodology details.
+  - Note conflicting viewpoints and present them fairly.
+
+continue_prompt: |
+  Below is the research summary from the previous cycle:
+  {last_summary}
+
+  1. Critical Evaluation:
+    Review the summary above critically. It may contain gaps, unverified claims, or shallow coverage. You have full autonomy to:
+    - Challenge any part that seems poorly supported.
+    - Disregard directions that feel like dead-ends.
+
+  2. Deepen and Broaden:
+    Based on the [Research Gaps & Next Steps] section, prioritize:
+    - Exploring sub-topics that lack sufficient depth.
+    - Finding primary sources, expert opinions, or quantitative data to strengthen weak sections.
+    - Investigating alternative perspectives or counterarguments not yet covered.
+    - Cross-verifying facts marked as "unverified" or "partial".
+
+  3. Autonomous Re-planning:
+    The summary is your memory; you provide the reasoning. Plan your next searches and visits to maximize the report's depth, breadth, and evidential strength.
+
+  Continue your deep research. Be thorough, skeptical, and exploratory.
+
+summary_prompt: |
+  Based on the research trajectory above for the topic: {input}
+
+  Produce a structured research summary that will feed into the next research cycle. This is NOT the final report — it is an intermediate working document.
+
+  OUTPUT FORMAT:
+
+  ## Key Findings
+  For each major finding, include:
+  - The factual content in full detail (do NOT abbreviate or use placeholders)
+  - Source annotation: [Source: <URL> | Verified: yes/no/partial]
+  - Relevance to the overall research topic
+
+  ## Evidence & Data Points
+  - List all specific data: statistics, dates, quotes, names, methodologies, comparisons
+  - Each item must cite its source
+
+  ## Analysis & Emerging Themes
+  - What patterns, trends, or themes are emerging across sources?
+  - Where do sources agree? Where do they conflict?
+  - What causal relationships or correlations have been identified?
+
+  ## Source Inventory
+  - Enumerate all sources visited with a brief quality assessment
+  - Note which sources were most valuable and why
+
+  ## Research Gaps & Next Steps
+  - What sub-topics still lack sufficient depth?
+  - What claims need cross-verification?
+  - What perspectives or counterarguments are missing?
+  - Suggest specific search queries or sources to pursue next
+
+  QUALITY RULES:
+  - Be exhaustive: no omissions of important information from the trajectory.
+  - Record actual content, not references to "see above" or "as mentioned".
+  - If sources conflict, present both sides and note which seems more credible and why.
+  - Label inferences explicitly as "Inference" with supporting reasoning.
+
+report_synthesis_prompt: |
+  You are tasked with writing a comprehensive research report based on multiple cycles of deep research.
+
+  **Research Topic:** {input}
+
+  **Accumulated Research Data:**
+  {all_summaries}
+
+  ---
+
+  Write a complete, publication-quality research report in Markdown format. Follow this structure:
+
+  # [Report Title]
+
+  ## Executive Summary
+  A concise overview of the key findings, significance, and conclusions (2-3 paragraphs).
+
+  ## 1. Introduction
+  - Background and context of the research topic
+  - Why this topic matters
+  - Scope and objectives of this report
+
+  ## 2. [Main Body Sections - create appropriate section titles based on the topic]
+  Organize the findings into logical thematic sections. For each section:
+  - Present findings with specific evidence, data, and examples
+  - Cite sources inline using [Source: URL] format
+  - Discuss different perspectives where they exist
+  - Include relevant statistics, dates, and quantitative data
+
+  (Create as many sections as needed to cover the topic thoroughly)
+
+  ## 3. Analysis & Discussion
+  - Synthesize findings across sections
+  - Identify key patterns, trends, and implications
+  - Discuss areas of consensus and controversy
+  - Address limitations of the available evidence
+
+  ## 4. Conclusions
+  - Summarize the most important findings
+  - Highlight key takeaways
+  - Suggest areas for further research
+
+  ## References
+  List all sources cited in the report.
+
+  ---
+
+  WRITING GUIDELINES:
+  - Write in a clear, professional, and objective tone.
+  - Be comprehensive: cover all aspects discovered during research.
+  - Use specific data and evidence, not vague generalizations.
+  - The report should be as long as necessary to cover the topic thoroughly — there is no length limit.
+  - Use tables, bullet points, and sub-sections where they improve clarity.
+  - Acknowledge uncertainties and conflicting evidence honestly.
+  - Do NOT fabricate information; only include what was found during research.
+
+model:
+  model_name: qwen/qwen3-235b-a22b
+  max_context_length: 131072
+  enable_qps_limit: false
+  tools:
+    - search
+    - visit
