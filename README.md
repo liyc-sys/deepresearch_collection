@@ -30,4 +30,5 @@ bash run_yunqueagent.sh "你的研究主题"
 
 ## 文档
 
-环境配置的详细说明见 [SETUP.md](SETUP.md)。
+- 环境配置：[SETUP.md](SETUP.md)
+- 五个框架的内部架构对比（多轮调用流程、报告生成机制）：[ARCHITECTURE.md](ARCHITECTURE.md)
